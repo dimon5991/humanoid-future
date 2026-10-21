@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humanoid Future | Мультисторінковий Портал Гуманоїдної Робототехніки</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Orbitron & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#08090d',
+                            card: '#0f1420',
+                            panel: 'rgba(15, 20, 32, 0.85)',
+                            cyan: '#00f0ff',
+                            purple: '#8a2be2',
+                            emerald: '#10b981',
+                            pink: '#ff007f',
+                            border: 'rgba(0, 240, 255, 0.2)'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif']
+                    },
+                    boxShadow: {
+                        neonCyan: '0 0 20px rgba(0, 240, 255, 0.35)',
+                        neonPurple: '0 0 20px rgba(138, 43, 226, 0.35)',
+                        glow: '0 0 35px rgba(0, 240, 255, 0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #08090d;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(13, 18, 30, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.18);
+        }
+
+        .glass-card {
+            background: rgba(15, 20, 32, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.12);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 240, 255, 0.5);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .neon-text-cyan {
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
+        }
+
+        /* Custom Page View Animations */
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in {
+            animation: fadeInSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Grid Background pattern */
+        .cyber-grid-pattern {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08090d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+    </style>
+</head>
+<body class="relative cyber-grid-pattern min-h-screen selection:bg-cyber-cyan selection:text-black flex flex-col justify-between">
+
+    <!-- Toast Notifications Layer -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- 1. NAVIGATION HEADER (FIXED MULTI-PAGE NAVBAR) -->
+    <header class="fixed top-0 left-0 w-full z-40 glass-panel border-b border-cyber-cyan/20 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            
+            <!-- Brand Logo -->
+            <a href="#home" class="flex items-center gap-3 group shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyber-cyan via-blue-600 to-cyber-purple p-0.5 shadow-neonCyan">
+                    <div class="w-full h-full bg-cyber-bg rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-microchip text-cyber-cyan text-lg group-hover:rotate-45 transition-transform duration-500"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-orbitron font-black text-lg tracking-wider text-white">HUMANOID<span class="text-cyber-cyan">.FUTURE</span></span>
+                    <span class="text-[9px] font-mono text-cyber-cyan/70 tracking-widest -mt-1">ROBOTICS PORTAL UA</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links (SPA Routing) -->
+            <nav class="hidden lg:flex items-center space-x-1 font-orbitron text-xs tracking-wider">
+                <a href="#home" class="nav-link px-3 py-2 rounded-lg transition-all">Головна</a>
+                <a href="#catalog" class="nav-link px-3 py-2 rounded-lg transition-all">Каталог</a>
+                <a href="#tech" class="nav-link px-3 py-2 rounded-lg transition-all">Технології</a>
+                <a href="#ethics" class="nav-link px-3 py-2 rounded-lg transition-all">Етика & Суспільство</a>
+                <a href="#knowledge" class="nav-link px-3 py-2 rounded-lg transition-all">База Знань</a>
+                <a href="#about" class="nav-link px-3 py-2 rounded-lg transition-all">Про проєкт</a>
+            </nav>
+
+            <!-- Global Quick Search Bar & Tools -->
+            <div class="hidden sm:flex items-center gap-3 relative">
+                <div class="relative w-48 md:w-60">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="global-search-input" onkeyup="handleGlobalSearch()" placeholder="Глобальний пошук..." class="w-full bg-cyber-card border border-cyber-cyan/30 focus:border-cyber-cyan rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none transition-all">
+                    
+                    <!-- Instant Dropdown Search Results -->
+                    <div id="global-search-dropdown" class="hidden absolute top-full left-0 w-80 mt-2 glass-panel border border-cyber-cyan/40 rounded-xl p-3 shadow-2xl z-50 max-h-80 overflow-y-auto space-y-2">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <button onclick="openCompareModal()" class="px-3 py-1.5 rounded-xl bg-cyber-card border border-cyber-cyan/40 hover:border-cyber-cyan text-xs font-orbitron text-cyber-cyan flex items-center gap-2 hover:shadow-neonCyan transition-all">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    <span class="hidden md:inline">Порівняння</span>
+                    <span id="compare-badge" class="w-4 h-4 rounded-full bg-cyber-cyan text-black font-bold text-[10px] flex items-center justify-center">0</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobile-menu-btn" class="lg:hidden text-cyber-cyan text-2xl p-1 focus:outline-none">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden mt-3 pt-3 border-t border-cyber-cyan/20 flex flex-col space-y-2 font-orbitron text-xs">
+            <a href="#home" class="mobile-nav-link py-2 px-3 rounded-lg hover:bg-cyber-cyan/10 hover:text-cyber-cyan">Головна</a>
+            <a href="#catalog" class="mobile-nav-link py-2 px-3 rounded-lg hover:bg-cyber-cyan/10 hover:text-cyber-cyan">Каталог Роботів</a>
+            <a href="#tech" class="mobile-nav-link py-2 px-3 rounded-lg hover:bg-cyber-cyan/10 hover:text-cyber-cyan">Технологічне Ядро</a>
+            <a href="#ethics" class="mobile-nav-link py-2 px-3 rounded-lg hover:bg-cyber-cyan/10 hover:text-cyber-cyan">Етика та Суспільство</a>
+            <a href="#knowledge" class="mobile-nav-link py-2 px-3 rounded-lg hover:bg-cyber-cyan/10 hover:text-cyber-cyan">База знань & Спільнота</a>
+            <a href="#about" class="mobile-nav-link py-2 px-3 rounded-lg hover:bg-cyber-cyan/10 hover:text-cyber-cyan">Про проєкт</a>
+            <div class="pt-2 flex items-center justify-between">
+                <button onclick="openCompareModal(); toggleMobileMenu();" class="w-full py-2 rounded-xl bg-cyber-card border border-cyber-cyan/40 text-cyber-cyan font-orbitron text-xs">
+                    Порівняти деталі (<span id="compare-badge-mobile">0</span>)
+                </button>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- MAIN CONTENT AREA FOR SPA PAGES (SEPARATE PAGE VIEWS) -->
+    <main class="pt-24 pb-16 flex-grow">
+
+        <!-- ================= PAGE 1: HOME (#home) ================= -->
+        <div id="page-home" class="page-view hidden max-w-7xl mx-auto px-4 lg:px-8 space-y-20">
+            
+            <!-- Hero Section with Canvas -->
+            <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-6">
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left z-10">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-cyber-cyan/40 text-cyber-cyan text-xs font-mono">
+                        <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-ping"></span>
+                        <span>ЕРА EMBODIED AI НАСТАЛА // 2026-2050+</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-orbitron font-black tracking-tight text-white leading-tight">
+                        ЕРА ВТІЛЕНОГО <br>
+                        <span class="bg-gradient-to-r from-cyber-cyan via-blue-400 to-cyber-purple bg-clip-text text-transparent neon-text-cyan">
+                            ШТУЧНОГО ІНТЕЛЕКТУ
+                        </span>
+                    </h1>
+
+                    <p class="text-slate-300 text-sm md:text-base max-w-2xl leading-relaxed">
+                        Ласкаво просимо до інтерактивного центру аналітики антропоморфної робототехніки. Досліджуйте існуючих андроїдів, перспективні концепти, їх інженерну анатомію та вплив на суспільство майбутнього.
+                    </p>
+
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#catalog" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyber-cyan to-blue-600 text-black font-orbitron font-bold text-xs tracking-wider hover:shadow-neonCyan transition-all duration-300 transform hover:-translate-y-0.5">
+                            ВІДКРИТИ КАТАЛОГ
+                        </a>
+                        <a href="#tech" class="px-6 py-3.5 rounded-xl glass-panel border border-cyber-cyan/40 hover:border-cyber-cyan text-white font-orbitron text-xs tracking-wider hover:bg-cyber-cyan/10 transition-all">
+                            ТЕХНОЛОГІЧНЕ ЯДРО
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3D Canvas Visualizer Card -->
+                <div class="lg:col-span-5 relative flex justify-center">
+                    <div class="w-full max-w-md aspect-square rounded-3xl glass-panel p-4 border border-cyber-cyan/30 relative flex flex-col justify-between overflow-hidden shadow-glow">
+                        <canvas id="hero-interactive-canvas" class="absolute inset-0 w-full h-full z-0"></canvas>
+                        
+                        <div class="relative z-10 flex justify-between items-center text-[10px] font-mono text-cyber-cyan">
+                            <span>SYS_NEURAL_CORE v9.4</span>
+                            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">ONLINE</span>
+                        </div>
+
+                        <div class="relative z-10 my-auto text-center pointer-events-none">
+                            <i class="fa-solid fa-robot text-6xl text-cyber-cyan opacity-80 drop-shadow-[0_0_20px_rgba(0,240,255,0.8)] animate-pulse"></i>
+                        </div>
+
+                        <div class="relative z-10 bg-cyber-bg/90 p-3 rounded-xl border border-cyber-cyan/20 text-[11px] font-mono space-y-1">
+                            <div class="flex justify-between text-slate-300">
+                                <span>Синхронізація сенсорів:</span>
+                                <span class="text-cyber-cyan">99.8%</span>
+                            </div>
+                            <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-gradient-to-r from-cyber-cyan to-cyber-purple h-full w-11/12 animate-pulse"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Navigation Hub Cards -->
+            <div class="space-y-6">
+                <div class="text-center">
+                    <h2 class="text-2xl font-orbitron font-bold text-white">ШВИДКИЙ НАВІГАТОР ПОРТАЛУ</h2>
+                    <p class="text-slate-400 text-xs mt-1">Оберіть розділ для занурення в екосистему</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <a href="#catalog" class="glass-card p-5 rounded-2xl flex flex-col items-center text-center group">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan flex items-center justify-center text-xl mb-3 group-hover:bg-cyber-cyan group-hover:text-black transition-all">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                        <h3 class="font-orbitron font-bold text-sm text-white mb-1">Каталог</h3>
+                        <p class="text-slate-400 text-[11px]">8+ провідних моделей та концептів</p>
+                    </a>
+
+                    <a href="#tech" class="glass-card p-5 rounded-2xl flex flex-col items-center text-center group">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30 text-cyber-purple flex items-center justify-center text-xl mb-3 group-hover:bg-cyber-purple group-hover:text-white transition-all">
+                            <i class="fa-solid fa-cpu"></i>
+                        </div>
+                        <h3 class="font-orbitron font-bold text-sm text-white mb-1">Технології</h3>
+                        <p class="text-slate-400 text-[11px]">Ш штучні м'язи, AGI та сенсорика</p>
+                    </a>
+
+                    <a href="#ethics" class="glass-card p-5 rounded-2xl flex flex-col items-center text-center group">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-xl mb-3 group-hover:bg-emerald-500 group-hover:text-black transition-all">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <h3 class="font-orbitron font-bold text-sm text-white mb-1">Етика</h3>
+                        <p class="text-slate-400 text-[11px]">Закони, UBI та ефект долини</p>
+                    </a>
+
+                    <a href="#knowledge" class="glass-card p-5 rounded-2xl flex flex-col items-center text-center group">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-xl mb-3 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                            <i class="fa-solid fa-book-bookmark"></i>
+                        </div>
+                        <h3 class="font-orbitron font-bold text-sm text-white mb-1">База знань</h3>
+                        <p class="text-slate-400 text-[11px]">Wiki, статті та форум спільноти</p>
+                    </a>
+
+                    <a href="#about" class="glass-card p-5 rounded-2xl flex flex-col items-center text-center group md:col-span-3 lg:col-span-1">
+                        <div class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/30 text-pink-400 flex items-center justify-center text-xl mb-3 group-hover:bg-pink-500 group-hover:text-black transition-all">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+                        <h3 class="font-orbitron font-bold text-sm text-white mb-1">Про проєкт</h3>
+                        <p class="text-slate-400 text-[11px]">Місія, команда та контакти</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Evolution Timeline: 2020 to 2050+ -->
+            <div class="space-y-6">
+                <div class="text-center">
+                    <span class="text-cyber-cyan font-mono text-xs tracking-widest">// ІСТОРИЧНИЙ ВЕКТОР</span>
+                    <h2 class="text-2xl sm:text-3xl font-orbitron font-bold text-white mt-1">ЕВОЛЮЦІЯ АНДРОЇДІВ (2020 – 2050+)</h2>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4" id="timeline-grid">
+                    <!-- Dynamic Timeline -->
+                </div>
+            </div>
+
+            <!-- Latest News Highlights -->
+            <div class="space-y-6 border-t border-cyber-cyan/10 pt-10">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <span class="text-cyber-cyan font-mono text-xs tracking-widest">// ДАЙДЖЕСТ</span>
+                        <h2 class="text-2xl font-orbitron font-bold text-white">ТЕХНОЛОГІЧНІ ПРОРИВИ</h2>
+                    </div>
+                    <a href="#knowledge" class="text-cyber-cyan text-xs font-mono hover:underline flex items-center gap-1">
+                        Усі матеріали <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+
+                <div id="home-news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- News dynamic cards -->
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= PAGE 2: CATALOG (#catalog) ================= -->
+        <div id="page-catalog" class="page-view hidden max-w-7xl mx-auto px-4 lg:px-8 space-y-8">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="px-3 py-1 rounded-full bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30 text-xs font-mono">РЕЄСТР АППАРАТНИХ ПЛАТФОРМ</span>
+                <h1 class="text-3xl sm:text-4xl font-orbitron font-bold text-white">КАТАЛОГ ГУМАНОЇДНИХ РОБОТІВ</h1>
+                <p class="text-slate-400 text-xs sm:text-sm">Повний огляд серійних моделей, дослідницьких прототипів та концептів майбутнього з можливістю фільтрації та порівняння.</p>
+            </div>
+
+            <!-- Filter Control Bar -->
+            <div class="glass-panel p-5 rounded-2xl space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                    <!-- Search Input -->
+                    <div class="md:col-span-5 relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="catalog-search" onkeyup="renderCatalog()" placeholder="Пошук за назвою або компанією..." class="w-full bg-cyber-card border border-cyber-cyan/30 focus:border-cyber-cyan rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 outline-none">
+                    </div>
+
+                    <!-- Drive Type Select -->
+                    <div class="md:col-span-3">
+                        <select id="catalog-drive-filter" onchange="renderCatalog()" class="w-full bg-cyber-card border border-cyber-cyan/30 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyber-cyan">
+                            <option value="all">Усі типи приводів</option>
+                            <option value="Electric">Електромеханічний</option>
+                            <option value="Hydraulic">Гідравлічний</option>
+                            <option value="Synthetic">Штучні м'язи / Полімери</option>
+                        </select>
+                    </div>
+
+                    <!-- AI Type Select -->
+                    <div class="md:col-span-4">
+                        <select id="catalog-ai-filter" onchange="renderCatalog()" class="w-full bg-cyber-card border border-cyber-cyan/30 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyber-cyan">
+                            <option value="all">Усі архитектури AI</option>
+                            <option value="AGI">AGI / End-to-End Vision-Language</option>
+                            <option value="RLHF">RLHF Teleop / Neural</option>
+                            <option value="Autonomous">Повна автономія L5</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Domain Category Buttons -->
+                <div class="flex flex-wrap gap-2 pt-2 border-t border-cyber-cyan/10">
+                    <button onclick="setCatalogDomain('all')" class="cat-domain-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-cyber-cyan text-black font-bold">Усі категорії</button>
+                    <button onclick="setCatalogDomain('prototype')" class="cat-domain-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-cyber-card border border-cyber-cyan/20 text-slate-300 hover:text-cyber-cyan">Сучасні прототипи</button>
+                    <button onclick="setCatalogDomain('concept')" class="cat-domain-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-cyber-card border border-cyber-cyan/20 text-slate-300 hover:text-cyber-cyan">Концепти майбутнього</button>
+                    <button onclick="setCatalogDomain('industrial')" class="cat-domain-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-cyber-card border border-cyber-cyan/20 text-slate-300 hover:text-cyber-cyan">Промислові</button>
+                    <button onclick="setCatalogDomain('home')" class="cat-domain-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-cyber-card border border-cyber-cyan/20 text-slate-300 hover:text-cyber-cyan">Домашні</button>
+                    <button onclick="setCatalogDomain('medical')" class="cat-domain-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-cyber-card border border-cyber-cyan/20 text-slate-300 hover:text-cyber-cyan">Медичні</button>
+                </div>
+            </div>
+
+            <!-- Robots Cards Grid -->
+            <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Dynamically Rendered Robots -->
+            </div>
+        </div>
+
+
+        <!-- ================= PAGE 3: TECH CORE (#tech) ================= -->
+        <div id="page-tech" class="page-view hidden max-w-7xl mx-auto px-4 lg:px-8 space-y-12">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="text-cyber-cyan font-mono text-xs tracking-widest uppercase">// Інженерний розбір</span>
+                <h1 class="text-3xl sm:text-4xl font-orbitron font-bold text-white">ТЕХНОЛОГІЧНЕ ЯДРО</h1>
+                <p class="text-slate-400 text-xs sm:text-sm">Детальний аналіз чотирьох стовпів сучасного та майбутнього гуманоїдобудування.</p>
+            </div>
+
+            <!-- Tech Tabs Switcher -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <button onclick="switchTechTab('ai')" id="tech-tab-ai" class="tech-tab-btn p-4 rounded-xl glass-panel border border-cyber-cyan/50 text-left active">
+                    <i class="fa-solid fa-brain text-cyber-cyan text-2xl mb-2"></i>
+                    <div class="font-orbitron font-bold text-sm text-white">1. Embodied AI</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Втілений ШІ & RLHF</div>
+                </button>
+
+                <button onclick="switchTechTab('muscle')" id="tech-tab-muscle" class="tech-tab-btn p-4 rounded-xl glass-panel border border-cyber-cyan/20 text-left">
+                    <i class="fa-solid fa-bolt-lightning text-cyber-purple text-2xl mb-2"></i>
+                    <div class="font-orbitron font-bold text-sm text-white">2. Біоміметика</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Штучні м'язи & Актуатори</div>
+                </button>
+
+                <button onclick="switchTechTab('skin')" id="tech-tab-skin" class="tech-tab-btn p-4 rounded-xl glass-panel border border-cyber-cyan/20 text-left">
+                    <i class="fa-solid fa-hand-sparkles text-emerald-400 text-2xl mb-2"></i>
+                    <div class="font-orbitron font-bold text-sm text-white">3. Сенсорика & Шкіра</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Тактильний зір & LiDAR</div>
+                </button>
+
+                <button onclick="switchTechTab('power')" id="tech-tab-power" class="tech-tab-btn p-4 rounded-xl glass-panel border border-cyber-cyan/20 text-left">
+                    <i class="fa-solid fa-charging-station text-amber-400 text-2xl mb-2"></i>
+                    <div class="font-orbitron font-bold text-sm text-white">4. Енергетика</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Твердотільні акумулятори</div>
+                </button>
+            </div>
+
+            <!-- Active Tech Tab Content Container -->
+            <div id="tech-tab-display" class="glass-panel p-6 sm:p-8 rounded-2xl border border-cyber-cyan/30">
+                <!-- Dynamically injected -->
+            </div>
+
+            <!-- Interactive Diagram Component -->
+            <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-cyber-purple/30 space-y-6">
+                <div class="text-center">
+                    <h3 class="text-xl font-orbitron font-bold text-white">ІНТЕРАКТИВНА СХЕМА АНАТОМІЇ АНДРОЇДА</h3>
+                    <p class="text-slate-400 text-xs mt-1">Натисніть на вузол для перегляду функціональних показників</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <!-- Interactive Hotspots Diagram -->
+                    <div class="lg:col-span-5 flex justify-center relative">
+                        <div class="w-64 h-80 rounded-2xl border border-cyber-cyan/30 glass-card relative flex flex-col items-center justify-between p-4">
+                            <!-- Hotspot 1: Head -->
+                            <button onclick="showHotspot('head')" class="absolute top-6 w-8 h-8 rounded-full bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan animate-pulse hover:scale-125 transition-transform flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <!-- Hotspot 2: Chest/Core -->
+                            <button onclick="showHotspot('core')" class="absolute top-24 w-8 h-8 rounded-full bg-cyber-purple/20 border border-cyber-purple text-cyber-purple animate-pulse hover:scale-125 transition-transform flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-microchip"></i>
+                            </button>
+                            <!-- Hotspot 3: Hands -->
+                            <button onclick="showHotspot('hands')" class="absolute top-36 left-8 w-8 h-8 rounded-full bg-emerald-400/20 border border-emerald-400 text-emerald-400 animate-pulse hover:scale-125 transition-transform flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-hand"></i>
+                            </button>
+                            <!-- Hotspot 4: Power/Pelvis -->
+                            <button onclick="showHotspot('power')" class="absolute top-44 w-8 h-8 rounded-full bg-amber-400/20 border border-amber-400 text-amber-400 animate-pulse hover:scale-125 transition-transform flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-battery-full"></i>
+                            </button>
+                            <!-- Hotspot 5: Legs -->
+                            <button onclick="showHotspot('legs')" class="absolute bottom-8 w-8 h-8 rounded-full bg-pink-400/20 border border-pink-400 text-pink-400 animate-pulse hover:scale-125 transition-transform flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-shoe-prints"></i>
+                            </button>
+                            
+                            <div class="text-[10px] font-mono text-slate-500 self-center mt-auto">НАКТИСНІТЬ ТОЧКУ СХЕМИ</div>
+                        </div>
+                    </div>
+
+                    <!-- Hotspot Detail Info Box -->
+                    <div class="lg:col-span-7 bg-cyber-bg/90 p-6 rounded-xl border border-cyber-cyan/20 space-y-3" id="hotspot-detail-box">
+                        <div class="text-xs font-mono text-cyber-cyan">// ВУЗОЛ НЕ ОБРАНО</div>
+                        <h4 class="text-lg font-orbitron font-bold text-white">Оберіть елемент на схемі зліва</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed">Дізнайтеся про точність роботи сенсорів, обчислювальну потужність FLOPS та ефективність моторів.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= PAGE 4: ETHICS & SOCIETY (#ethics) ================= -->
+        <div id="page-ethics" class="page-view hidden max-w-7xl mx-auto px-4 lg:px-8 space-y-12">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="text-cyber-purple font-mono text-xs tracking-widest uppercase">// Соціально-гуманітарний вимір</span>
+                <h1 class="text-3xl sm:text-4xl font-orbitron font-bold text-white">ЕТИКА, ЗАКОН ТА СУСПІЛЬСТВО</h1>
+                <p class="text-slate-400 text-xs sm:text-sm">Виклики інтеграції автономних гуманоїдів у людську цивілізацію.</p>
+            </div>
+
+            <!-- Key Ethical Topics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="glass-panel p-6 rounded-2xl border border-cyber-cyan/30 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-gavel"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-base text-white">Юридичний статус & Закони</h3>
+                    <p class="text-slate-300 text-xs leading-relaxed">
+                        Хто відповідає за помилку робота з AGI — програмний розробник, власник чи безпосередньо автономний суб’єкт? Огляд правових ініціатив ООН та ЄС.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-cyber-purple/30 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyber-purple/10 border border-cyber-purple/40 text-cyber-purple flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-base text-white">Ринок праці та UBI</h3>
+                    <p class="text-slate-300 text-xs leading-relaxed">
+                        Автоматизація ручної праці звільнить мільйони людей. Модель "Податку на роботів" забезпечить фінансування Безумовного Базового Доходу.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-emerald-500/30 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-face-grimace"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-base text-white">Uncanny Valley & Довіра</h3>
+                    <p class="text-slate-300 text-xs leading-relaxed">
+                        Чому занадто схожий на людину робот може викликати підсвідомий страх, і як промисловий дизайн розв'язує цю психологічну проблему.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Interactive Ethical Dilemma Simulator & Poll -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Live Community Poll -->
+                <div class="lg:col-span-6 glass-panel p-6 rounded-2xl border border-cyber-cyan/30 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-mono text-cyber-cyan">// ГРОМАДСЬКА ДУМКА</span>
+                        <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-mono">LIVE VOTE</span>
+                    </div>
+
+                    <h3 class="text-lg font-orbitron font-bold text-white">Чи довірили б ви роботизованому асистенту догляд за дитиною або літніми батьками?</h3>
+
+                    <div id="ethics-poll-options" class="space-y-3 pt-2">
+                        <button onclick="castEthicsVote('yes')" class="w-full p-3 rounded-xl border border-cyber-cyan/30 hover:border-cyber-cyan text-left text-xs font-semibold text-white flex justify-between items-center hover:bg-cyber-cyan/10 transition-all">
+                            <span>Так, за наявності державної ліцензії AGI</span>
+                            <i class="fa-regular fa-circle-check text-cyber-cyan"></i>
+                        </button>
+                        <button onclick="castEthicsVote('hybrid')" class="w-full p-3 rounded-xl border border-cyber-cyan/30 hover:border-cyber-cyan text-left text-xs font-semibold text-white flex justify-between items-center hover:bg-cyber-cyan/10 transition-all">
+                            <span>Тільки як помічник під моїм відеоконтролем</span>
+                            <i class="fa-regular fa-circle-check text-cyber-cyan"></i>
+                        </button>
+                        <button onclick="castEthicsVote('no')" class="w-full p-3 rounded-xl border border-cyber-cyan/30 hover:border-cyber-cyan text-left text-xs font-semibold text-white flex justify-between items-center hover:bg-cyber-cyan/10 transition-all">
+                            <span>Категорично ні, догляд потребує емпатії</span>
+                            <i class="fa-regular fa-circle-check text-cyber-cyan"></i>
+                        </button>
+                    </div>
+
+                    <div id="ethics-poll-results" class="hidden space-y-3 pt-2">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Ethical Scenario Case Simulator -->
+                <div class="lg:col-span-6 glass-panel p-6 rounded-2xl border border-cyber-purple/30 space-y-4">
+                    <div class="text-xs font-mono text-cyber-purple">// СИМУЛЯТОР ЕТИЧНИХ КЕЙСІВ</div>
+                    <h3 class="text-lg font-orbitron font-bold text-white">Кейс: Пріоритет порятунку під час пожежі</h3>
+                    <p class="text-slate-300 text-xs leading-relaxed">
+                        Автономний робот-рятувальник у палаючій будівлі має енергії лише на винесення одного об'єкта. Всередині людина та сервер з унікальними науковими даними про ліки від раку. Який алгоритм має бути закладений?
+                    </p>
+
+                    <div class="space-y-2 pt-2">
+                        <button onclick="resolveDilemma('human')" class="w-full p-3 rounded-xl bg-cyber-card border border-cyber-purple/30 hover:border-cyber-purple text-left text-xs text-white transition-all">
+                            Абсолютний пріоритет людського життя (Антропоцентризм)
+                        </button>
+                        <button onclick="resolveDilemma('data')" class="w-full p-3 rounded-xl bg-cyber-card border border-cyber-purple/30 hover:border-cyber-purple text-left text-xs text-white transition-all">
+                            Пріоритет максимальної користі для більшості (Утилітаризм)
+                        </button>
+                    </div>
+
+                    <div id="dilemma-result" class="hidden p-4 rounded-xl bg-cyber-bg/90 border border-cyber-purple/40 text-xs leading-relaxed text-slate-300">
+                        <!-- Dynamic result text -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- ================= PAGE 5: KNOWLEDGE & COMMUNITY (#knowledge) ================= -->
+        <div id="page-knowledge" class="page-view hidden max-w-7xl mx-auto px-4 lg:px-8 space-y-10">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="text-cyber-cyan font-mono text-xs tracking-widest uppercase">// Відкритий архів & Форум</span>
+                <h1 class="text-3xl sm:text-4xl font-orbitron font-bold text-white">БАЗА ЗНАНЬ ТА СПІЛЬНОТА</h1>
+                <p class="text-slate-400 text-xs sm:text-sm">Глосарій термінів, аналітичні матеріали та майданчик для дискусій.</p>
+            </div>
+
+            <!-- Knowledge Sub-navigation Tabs -->
+            <div class="flex justify-center border-b border-cyber-cyan/20 space-x-6 font-orbitron text-xs font-bold">
+                <button onclick="switchKnowledgeTab('wiki')" id="know-tab-wiki" class="py-3 text-cyber-cyan border-b-2 border-cyber-cyan">
+                    <i class="fa-solid fa-book mr-1"></i> Wiki-Глосарій
+                </button>
+                <button onclick="switchKnowledgeTab('articles')" id="know-tab-articles" class="py-3 text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-newspaper mr-1"></i> Статті та Блог
+                </button>
+                <button onclick="switchKnowledgeTab('forum')" id="know-tab-forum" class="py-3 text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-comments mr-1"></i> Форум
+                </button>
+            </div>
+
+            <!-- SUB-VIEW 1: WIKI GLOSSARY -->
+            <div id="know-sec-wiki" class="space-y-6">
+                <div class="max-w-md mx-auto relative">
+                    <input type="text" id="wiki-search-input" onkeyup="renderWiki()" placeholder="Пошук терміну (напр. Embodied AI, AGI...)" class="w-full bg-cyber-card border border-cyber-cyan/30 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-cyber-cyan">
+                </div>
+
+                <div id="wiki-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Wiki items dynamic -->
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 2: BLOG & ARTICLES -->
+            <div id="know-sec-articles" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Blog items dynamic -->
+            </div>
+
+            <!-- SUB-VIEW 3: COMMUNITY FORUM -->
+            <div id="know-sec-forum" class="hidden space-y-6 max-w-4xl mx-auto">
+                <!-- New Post Box -->
+                <div class="glass-panel p-5 rounded-2xl space-y-3">
+                    <h4 class="font-orbitron font-bold text-sm text-white">Створити тему на форумі</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input type="text" id="forum-author" placeholder="Ваш позывний / Ім'я" class="bg-cyber-card border border-cyber-cyan/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-cyber-cyan">
+                        <input type="text" id="forum-title" placeholder="Тема обговорення" class="bg-cyber-card border border-cyber-cyan/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-cyber-cyan">
+                    </div>
+                    <textarea id="forum-msg" rows="3" placeholder="Ваші роздуми про майбутнє робототехніки..." class="w-full bg-cyber-card border border-cyber-cyan/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-cyber-cyan"></textarea>
+                    <button onclick="postForumThread()" class="px-5 py-2.5 bg-cyber-cyan text-black font-orbitron font-bold text-xs rounded-xl hover:shadow-neonCyan transition-all">
+                        ОПУБЛІКУВАТИ
+                    </button>
+                </div>
+
+                <!-- Forum Stream -->
+                <div id="forum-stream" class="space-y-4">
+                    <!-- Dynamic Forum Threads -->
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ================= PAGE 6: ABOUT & CONTACTS (#about) ================= -->
+        <div id="page-about" class="page-view hidden max-w-7xl mx-auto px-4 lg:px-8 space-y-12">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="text-cyber-cyan font-mono text-xs tracking-widest uppercase">// Про нас</span>
+                <h1 class="text-3xl sm:text-4xl font-orbitron font-bold text-white">МІСІЯ HUMANOID FUTURE</h1>
+                <p class="text-slate-400 text-xs sm:text-sm">Формуємо українську дослідницьку платформу про автономні кібернетичні системи.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                
+                <!-- Mission Details -->
+                <div class="lg:col-span-7 glass-panel p-6 sm:p-8 rounded-2xl space-y-6 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-orbitron font-bold text-white">Чому це важливо для України та світу?</h3>
+                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                            Розвиток втіленого штучного інтелекту змінить глобальну економіку швидше, ніж інтернет у 1990-х роках. Мета нашого порталу — агрегувати аналітику, інженерні специфікації та етичні стандарти для української спільноти розробників, інвесторів та дослідників.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl bg-cyber-card border border-cyber-cyan/20">
+                            <div class="text-cyber-cyan font-orbitron font-bold text-lg">100% UA</div>
+                            <div class="text-xs text-slate-400 mt-1">Україномовний освітній контент про робототехніку.</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-cyber-card border border-cyber-purple/20">
+                            <div class="text-cyber-purple font-orbitron font-bold text-lg">AGI Ready</div>
+                            <div class="text-xs text-slate-400 mt-1">Аналіз мовних та зорових нейромереж нового покоління.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-5 glass-panel p-6 sm:p-8 rounded-2xl border border-cyber-cyan/30 space-y-4">
+                    <h3 class="text-xl font-orbitron font-bold text-white">ЗВ'ЯЗОК ТА СВІВПРАЦЯ</h3>
+                    <p class="text-xs text-slate-400">Надішліть нам питання, пропозицію для ЗМІ або ідею дослідження.</p>
+
+                    <form id="contact-form" onsubmit="submitContactForm(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-mono text-slate-300 mb-1">Ваше Ім'я</label>
+                            <input type="text" id="contact-name" required placeholder="Максим" class="w-full bg-cyber-card border border-cyber-cyan/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-cyber-cyan">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-mono text-slate-300 mb-1">Email</label>
+                            <input type="email" id="contact-email" required placeholder="max@robotics.ua" class="w-full bg-cyber-card border border-cyber-cyan/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-cyber-cyan">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-mono text-slate-300 mb-1">Повідомлення</label>
+                            <textarea id="contact-msg" rows="3" required placeholder="Тема вашого запиту..." class="w-full bg-cyber-card border border-cyber-cyan/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-cyber-cyan"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-cyber-cyan to-blue-600 text-black font-orbitron font-bold text-xs rounded-xl hover:shadow-neonCyan transition-all">
+                            ВІДПРАВИТИ
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Weekly Newsletter Subscription -->
+            <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-cyber-purple/40 text-center space-y-4">
+                <i class="fa-regular fa-envelope text-3xl text-cyber-purple"></i>
+                <h3 class="text-xl font-orbitron font-bold text-white">ЩОТИЖНЕВА ФУТУРОЛОГІЧНА РОЗСИЛКА</h3>
+                <p class="text-xs text-slate-400 max-w-xl mx-auto">Отримуйте найголовніші новини про AGI, випробування андроїдів та інженерні дайджести щоп'ятниці.</p>
+                
+                <form onsubmit="submitNewsletter(event)" class="flex flex-col sm:flex-row max-w-md mx-auto gap-2">
+                    <input type="email" id="newsletter-email" required placeholder="ваш.email@domain.com" class="flex-grow bg-cyber-card border border-cyber-purple/30 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-cyber-purple">
+                    <button type="submit" class="px-6 py-2.5 bg-cyber-purple text-white font-orbitron font-bold text-xs rounded-xl hover:shadow-neonPurple transition-all shrink-0">
+                        ПІДПИСАТИСЯ
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="border-t border-cyber-cyan/20 bg-cyber-card py-6 text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-microchip text-cyber-cyan"></i>
+                <span class="font-orbitron font-bold text-white">HUMANOID.FUTURE</span>
+                <span>© 2026. Усі права захищено.</span>
+            </div>
+            <div class="flex space-x-6 font-orbitron text-[11px]">
+                <a href="#home" class="hover:text-cyber-cyan">Головна</a>
+                <a href="#catalog" class="hover:text-cyber-cyan">Каталог</a>
+                <a href="#about" class="hover:text-cyber-cyan">Контакти</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- MODAL 1: ROBOT DETAILS MODAL -->
+    <div id="robot-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-2xl rounded-2xl border border-cyber-cyan/50 p-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeRobotModal()" class="absolute top-4 right-4 text-slate-400 hover:text-cyber-cyan text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="robot-modal-body">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: SIDE-BY-SIDE COMPARISON MODAL -->
+    <div id="compare-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-4xl rounded-2xl border border-cyber-cyan/50 p-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeCompareModal()" class="absolute top-4 right-4 text-slate-400 hover:text-cyber-cyan text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-orbitron font-bold text-white mb-4 text-center">ПОРІВНЯЛЬНИЙ АНАЛІЗ МОДЕЛЕЙ</h3>
+            <div id="compare-modal-body">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: ARTICLE MODAL -->
+    <div id="article-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-2xl rounded-2xl border border-cyber-cyan/50 p-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeArticleModal()" class="absolute top-4 right-4 text-slate-400 hover:text-cyber-cyan text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="article-modal-body">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC & SPA ROUTER -->
+    <script>
+        /* =======================================================
+           1. DATA STORES (Robots, Timeline, News, Tech, Wiki, Forum)
+           ======================================================= */
+        
+        const ROBOTS_DATA = [
+            {
+                id: 'optimus-gen3',
+                name: 'Tesla Optimus Gen 3',
+                company: 'Tesla Inc.',
+                domain: 'home', // 'prototype', 'concept', 'industrial', 'home', 'medical'
+                drive: 'Electric',
+                aiType: 'AGI',
+                year: '2025/2026',
+                status: 'Серійне випробування',
+                price: '~$20,000',
+                height: '173 см',
+                weight: '57 кг',
+                speed: '8 км/год',
+                battery: '2.3 кВт·год (до 5 годин)',
+                actuators: '28 ступенів свободи (електромеханіка)',
+                desc: 'Третє покоління антропоморфного робота Tesla. Оснащений тактильною шкірою на пальцях з чутливістю 10 грам та інтегрованим автопілотом FSD Full-Self Driving.',
+                useCases: ['Побутове прибирання', 'Автомобільне збирання', 'Логістичне сортування'],
+                icon: 'fa-robot'
+            },
+            {
+                id: 'figure-02',
+                name: 'Figure 02',
+                company: 'Figure AI & OpenAI',
+                domain: 'industrial',
+                drive: 'Electric',
+                aiType: 'AGI',
+                year: '2024/2025',
+                status: 'Комерційний пілот (BMW)',
+                price: '~$50,000',
+                height: '168 см',
+                weight: '60 кг',
+                speed: '4.5 км/год',
+                battery: '2.2 кВт·год (до 5 годин)',
+                actuators: 'Внутрішня проводка, 6-те покоління приводів',
+                desc: 'Найдосконаліший промисловий андроїд з голосовим мовним ядром OpenAI. Виконує складні автономні маніпуляції на заводах BMW.',
+                useCases: ['Автомобільні заводи', 'Складська логістика', 'Усне мовне спілкування'],
+                icon: 'fa-microchip'
+            },
+            {
+                id: 'electric-atlas',
+                name: 'Electric Atlas',
+                company: 'Boston Dynamics',
+                domain: 'industrial',
+                drive: 'Electric',
+                aiType: 'RLHF',
+                year: '2024',
+                status: 'R&D Прототип',
+                price: 'Оцінка $150,000+',
+                height: '150 см',
+                weight: '89 кг',
+                speed: '10 км/год',
+                battery: 'Високострумовий твердотільний модуль',
+                actuators: '360° обертові безщіткові мотор-редуктори',
+                desc: 'Повністю електричний спадкоємець легендарного гідравлічного Atlas. Суглоби обертаються на 360 градусів без анатомічних обмежень людини.',
+                useCases: ['Важка промисловість', 'Рятувальні операції', 'Екстремальні умови'],
+                icon: 'fa-bolt'
+            },
+            {
+                id: 'sanctuary-phoenix',
+                name: 'Sanctuary Phoenix',
+                company: 'Sanctuary AI',
+                domain: 'home',
+                drive: 'Electric',
+                aiType: 'RLHF',
+                year: '2024',
+                status: 'Пілотні тести',
+                price: '~$40,000',
+                height: '170 см',
+                weight: '68 кг',
+                speed: '5 км/год',
+                battery: '3.5 години роботи',
+                actuators: 'Гідравлічно-електрична кисть Carbon AI',
+                desc: 'Робот із рекордним ступенем свободи кистей рук, що точно повторює дрібну моторику людських пальців через навчання в VR.',
+                useCases: ['Фасування товарів', 'Робота касира', 'Сортування медикаментів'],
+                icon: 'fa-hand'
+            },
+            {
+                id: 'ameca-2',
+                name: 'Ameca 2.0',
+                company: 'Engineered Arts',
+                domain: 'prototype',
+                drive: 'Electric',
+                aiType: 'AGI',
+                year: '2025',
+                status: 'Серійний продаж для музеїв',
+                price: '~$100,000',
+                height: '187 см',
+                weight: '49 кг',
+                speed: 'Не ходячий / Стаціонар',
+                battery: 'Мережеве живлення / Резерв 2 год',
+                actuators: 'Мікро-сервоприводи силіконової міміки',
+                desc: 'Найбільш емоційний гуманоїд у світі. Силіконова міміка передає понад 50 мікро-виразів обличчя в реальному часі.',
+                useCases: ['Хостес & Презентації', 'Соціальні дослідження', 'Інтерактивні шоу'],
+                icon: 'fa-face-smile'
+            },
+            {
+                id: 'cyberone-next',
+                name: 'CyberOne Next',
+                company: 'Xiaomi',
+                domain: 'prototype',
+                drive: 'Electric',
+                aiType: 'RLHF',
+                year: '2025',
+                status: 'Прототип',
+                price: 'Оцінка $75,000',
+                height: '177 см',
+                weight: '52 кг',
+                speed: '3.6 км/год',
+                battery: '2 години автономії',
+                actuators: 'Високомоментні мотори серії Mi-Drive',
+                desc: 'Гуманоїд з аналізом 3D-простору через сенсор Mi-Sense та розпізнаванням 45 людських емоцій за інтонацією голосу.',
+                useCases: ['Персональний асистент', 'Дослідження', 'Побутовий контроль'],
+                icon: 'fa-eye'
+            },
+            {
+                id: 'neuralis-x1',
+                name: 'Neuralis X-1',
+                company: 'BioRobotics Labs (Концепт)',
+                domain: 'medical',
+                drive: 'Synthetic',
+                aiType: 'Autonomous',
+                year: '2035',
+                status: 'Концепт майбутнього',
+                price: 'Прогноз $30,000',
+                height: '165 см',
+                weight: '42 кг',
+                speed: '6 км/год',
+                battery: 'Водневий осередковий блок (24 години)',
+                actuators: 'Електроактивні полімерні м\'язи (EAP)',
+                desc: 'Концепт для майбутнього медицини: м’яка штучна шкіра, повна відсутність жорстких металевих кутів та цілодобовий огляд хворих.',
+                useCases: ['Догляд за літніми', 'Фізіотерапія', 'Хірургічне асистування'],
+                icon: 'fa-heart-pulse'
+            },
+            {
+                id: 'synthetic-genesis',
+                name: 'Synthetic Genesis 2045',
+                company: 'Aether Cybernetics (Концепт)',
+                domain: 'concept',
+                drive: 'Synthetic',
+                aiType: 'Autonomous',
+                year: '2045',
+                status: 'Далекий концепт',
+                price: 'Невідомо',
+                height: '180 см',
+                weight: '35 кг',
+                speed: '15 км/год',
+                battery: 'Квантово-ізотопний мікро-генератор',
+                actuators: 'Магнітно-рідкі штучні м\'язи',
+                desc: 'Футуристичний синтетичний організм з молекулярною саморегенерацією покриття та інтегрованим космічним AGI.',
+                useCases: ['Колонізація Марса', 'Глибоководні занурення', 'Робота в ядерних реакторах'],
+                icon: 'fa-dna'
+            }
+        ];
+
+        const TIMELINE_DATA = [
+            { year: '2020', title: 'Бостонські сальто', desc: 'Гідравлічний Atlas демонструє складний паркур.' },
+            { year: '2022', title: 'Tesla Optimus G1', desc: 'Перший публічний старт комерційного андроїда.' },
+            { year: '2024', title: 'Інтеграція AGI', desc: 'Figure 02 отримує мовну модель OpenAI.' },
+            { year: '2026', title: 'Масові фабрики', desc: 'Впровадження сотень роботів на заводах BMW та Tesla.' },
+            { year: '2035', title: 'Штучні м\'язи', desc: 'Заміна металевих моторів на еластичні полімери.' },
+            { year: '2050+', title: 'Синтетична Ера', desc: 'Повна автономність андроїдів у кожному домі.' }
+        ];
+
+        const NEWS_DATA = [
+            {
+                id: 1,
+                title: 'OpenAI та Figure оголосили про реліз втіленої моделі VLA-3',
+                date: '21 Жовтня, 2026',
+                summary: 'Модель дозволяє роботові орієнтуватися у незнайомому приміщенні без попереднього сканування карт.',
+                text: 'Нейромережа нового покоління Vision-Language-Action автоматично синтезує рухи пальців на основі лише однієї голосової команди людини.'
+            },
+            {
+                id: 2,
+                title: 'Японські інженери створили плівку штучної шкіри товщиною 8 мікронів',
+                date: '19 Жовтня, 2026',
+                summary: 'Графенова матриця передає силу тиску від 0.1 грама до 50 кілограмів.',
+                text: 'Розробка дозволить роботизованим доглядачам безпечно взаємодіяти з немовлятами та літніми людьми без ризику випадкового стискання.'
+            },
+            {
+                id: 3,
+                title: 'Перший завод у США повністю перевів складську логістику на гуманоїдів',
+                date: '15 Жовтня, 2026',
+                summary: 'Понад 120 роботів працюють у три зміни без зупинки виробництва.',
+                text: 'Завдяки швидкій індукційній зарядці від підлоги, час простою апаратів скоротився до рекордних 1.5%.'
+            }
+        ];
+
+        const WIKI_DATA = [
+            { term: 'Embodied AI (Втілений ШІ)', def: 'Штучний інтелект, який має фізичне тіло та взаємодіє з реальним світом через сенсори й актуатори.' },
+            { term: 'AGI (General Artificial Intelligence)', def: 'Загальний штучний інтелект, який здатний виконувати будь-яку інтелектуальну роботу на рівні людини.' },
+            { term: 'Actuator (Актуатор)', def: 'Двигун чи «м’яз» робота, який перетворює електричну чи гідравлічну енергію в механічний рух.' },
+            { term: 'Uncanny Valley (Зловісна долина)', def: 'Психологічний ефект, коли майже людиноподібний робот викликає відторгнення через дрібні неприродності.' },
+            { term: 'ROS 2 (Robot Operating System)', def: 'Спеціалізоване програмне забезпечення з відкритим кодом для розробки робототехніки.' },
+            { term: 'Tactile Array (Тактильна матриця)', def: 'Сітка сенсорів на поверхні штучної шкіри для визначення текстури та сили тиску.' }
+        ];
+
+        const BLOG_DATA = [
+            {
+                id: 'b1',
+                title: 'Чому саме антропоморфна форма є універсальною?',
+                date: '18 Жовтня, 2026',
+                summary: 'Наш світ спроєктований під висоту людини, дверні ручки, сходи та кермо. Гуманоїду не потрібна перебудова інфраструктури.',
+                content: 'Вся цивілізація створила предмети під дві руки, п\'ять пальців та вертикальну ходу. Створення колесного робота обмежується сходами, а гуманоїд може увійти в будь-яку будівлю.'
+            },
+            {
+                id: 'b2',
+                title: 'Електродвигуни чи полімерні м\'язи?',
+                date: '10 Жовтня, 2026',
+                summary: 'Порівняльний аналіз ККД сучасних безщіткових моторів та концептуальних електроактивних полімерів.',
+                content: 'Сервомотори потребують важких редукторів і споживають струм навіть для утримання ваги. Полімерні м\'язи скорочуються подібно до живих волокон, зменшуючи вагу робота на 40%.'
+            },
+            {
+                id: 'b3',
+                title: 'Соціальний контракт: Податок на автоматизацію',
+                date: '02 Жовтня, 2026',
+                summary: 'Як Безумовний Базовий Дохід (UBI) може бути профінансований за рахунок роботизованих фабрик.',
+                content: 'Замінюючи людську працю, компанії мають сплачувати внесок у соціальний фонд, який розподіляється між громадянами для підтримки купівельної спроможності.'
+            }
+        ];
+
+        let FORUM_THREADS = [
+            { id: 1, author: 'Kiber_Olexa', title: 'Коли чекати Tesla Optimus у вільному продажі в Україні?', msg: 'Як думаєте, чи будуть офіційні сервісні центри у Києві до 2028 року?', likes: 18, time: '3 години тому' },
+            { id: 2, author: 'AI_Researcher_UA', title: 'Проблема перегріву актуаторів при тривалій ході', msg: 'Хто читав свіжий пейпер Boston Dynamics про рідинне охолодження стопи?', likes: 9, time: '7 годин тому' }
+        ];
+
+        let selectedCompareIds = [];
+        let currentCatalogDomain = 'all';
+
+        /* =======================================================
+           2. SPA HASH ROUTER LOGIC
+           ======================================================= */
+        const VALID_ROUTES = ['home', 'catalog', 'tech', 'ethics', 'knowledge', 'about'];
+
+        function handleRouting() {
+            let hash = window.location.hash.replace('#', '') || 'home';
+            if (!VALID_ROUTES.includes(hash)) hash = 'home';
+
+            // Hide all page views
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.classList.add('hidden');
+                view.classList.remove('animate-fade-in');
+            });
+
+            // Show active page view
+            const activeView = document.getElementById(`page-${hash}`);
+            if (activeView) {
+                activeView.classList.remove('hidden');
+                setTimeout(() => activeView.classList.add('animate-fade-in'), 10);
+            }
+
+            // Update Navigation active states
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const linkHash = link.getAttribute('href').replace('#', '');
+                if (linkHash === hash) {
+                    link.className = 'nav-link px-3 py-2 rounded-lg transition-all text-cyber-cyan border-b-2 border-cyber-cyan font-bold bg-cyber-cyan/10';
+                } else {
+                    link.className = 'nav-link px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white hover:bg-cyber-cyan/5';
+                }
+            });
+
+            // Smooth Scroll to Top on Page Change
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Close Mobile Menu and Global Search Dropdown
+            closeGlobalSearch();
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+
+        window.addEventListener('hashchange', handleRouting);
+        window.addEventListener('DOMContentLoaded', () => {
+            handleRouting();
+            initHeroInteractiveCanvas();
+            renderTimeline();
+            renderHomeNews();
+            renderCatalog();
+            switchTechTab('ai');
+            renderWiki();
+            renderArticles();
+            renderForum();
+        });
+
+        /* =======================================================
+           3. HERO INTERACTIVE CANVAS
+           ======================================================= */
+        function initHeroInteractiveCanvas() {
+            const canvas = document.getElementById('hero-interactive-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const nodes = Array.from({ length: 30 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.8,
+                vy: (Math.random() - 0.5) * 0.8,
+                color: Math.random() > 0.4 ? '#00f0ff' : '#8a2be2'
+            }));
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                nodes.forEach((n, i) => {
+                    n.x += n.vx;
+                    n.y += n.vy;
+
+                    if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+                    if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, 2.5, 0, Math.PI * 2);
+                    ctx.fillStyle = n.color;
+                    ctx.fill();
+
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const n2 = nodes[j];
+                        const dist = Math.hypot(n.x - n2.x, n.y - n2.y);
+                        if (dist < 90) {
+                            ctx.beginPath();
+                            ctx.moveTo(n.x, n.y);
+                            ctx.lineTo(n2.x, n2.y);
+                            ctx.strokeStyle = `rgba(0, 240, 255, ${0.2 * (1 - dist / 90)})`;
+                            ctx.stroke();
+                        }
+                    }
+                });
+
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        /* =======================================================
+           4. GLOBAL QUICK SEARCH
+           ======================================================= */
+        function handleGlobalSearch() {
+            const query = document.getElementById('global-search-input')?.value.trim().toLowerCase();
+            const dropdown = document.getElementById('global-search-dropdown');
+            if (!dropdown) return;
+
+            if (!query || query.length < 2) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+
+            const robotHits = ROBOTS_DATA.filter(r => r.name.toLowerCase().includes(query) || r.company.toLowerCase().includes(query));
+            const newsHits = NEWS_DATA.filter(n => n.title.toLowerCase().includes(query));
+            const wikiHits = WIKI_DATA.filter(w => w.term.toLowerCase().includes(query));
+
+            let html = '';
+
+            if (robotHits.length) {
+                html += `<div class="text-[10px] font-mono text-cyber-cyan font-bold uppercase mb-1">Роботи</div>`;
+                robotHits.forEach(r => {
+                    html += `
+                        <div onclick="navigateToRobotDetail('${r.id}')" class="p-2 rounded-lg hover:bg-cyber-cyan/10 cursor-pointer text-xs text-white flex justify-between items-center">
+                            <span>${r.name} (${r.company})</span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-cyber-cyan"></i>
+                        </div>
+                    `;
+                });
+            }
+
+            if (newsHits.length) {
+                html += `<div class="text-[10px] font-mono text-cyber-purple font-bold uppercase mt-2 mb-1">Новини</div>`;
+                newsHits.forEach(n => {
+                    html += `
+                        <div onclick="navigateToNews('${n.title}')" class="p-2 rounded-lg hover:bg-cyber-purple/10 cursor-pointer text-xs text-white flex justify-between items-center">
+                            <span class="truncate">${n.title}</span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-cyber-purple"></i>
+                        </div>
+                    `;
+                });
+            }
+
+            if (wikiHits.length) {
+                html += `<div class="text-[10px] font-mono text-emerald-400 font-bold uppercase mt-2 mb-1">Wiki Терміни</div>`;
+                wikiHits.forEach(w => {
+                    html += `
+                        <div onclick="navigateToWiki('${w.term}')" class="p-2 rounded-lg hover:bg-emerald-500/10 cursor-pointer text-xs text-white flex justify-between items-center">
+                            <span>${w.term}</span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-emerald-400"></i>
+                        </div>
+                    `;
+                });
+            }
+
+            if (!html) {
+                html = `<div class="text-xs text-slate-400 text-center py-2">Нічого не знайдено</div>`;
+            }
+
+            dropdown.innerHTML = html;
+            dropdown.classList.remove('hidden');
+        }
+
+        function closeGlobalSearch() {
+            const dropdown = document.getElementById('global-search-dropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+        }
+
+        function navigateToRobotDetail(id) {
+            window.location.hash = '#catalog';
+            setTimeout(() => {
+                openRobotModal(id);
+            }, 150);
+        }
+
+        function navigateToNews(title) {
+            window.location.hash = '#home';
+        }
+
+        function navigateToWiki(term) {
+            window.location.hash = '#knowledge';
+            switchKnowledgeTab('wiki');
+            const input = document.getElementById('wiki-search-input');
+            if (input) {
+                input.value = term;
+                renderWiki();
+            }
+        }
+
+        /* =======================================================
+           5. HOME PAGE RENDERING
+           ======================================================= */
+        function renderTimeline() {
+            const grid = document.getElementById('timeline-grid');
+            if (!grid) return;
+
+            grid.innerHTML = TIMELINE_DATA.map(t => `
+                <div class="glass-card p-4 rounded-xl relative border border-cyber-cyan/20">
+                    <div class="text-cyber-cyan font-orbitron font-bold text-lg mb-1">${t.year}</div>
+                    <div class="text-white font-bold text-xs mb-1">${t.title}</div>
+                    <div class="text-slate-400 text-[11px] leading-snug">${t.desc}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderHomeNews() {
+            const grid = document.getElementById('home-news-grid');
+            if (!grid) return;
+
+            grid.innerHTML = NEWS_DATA.map(n => `
+                <div class="glass-card p-5 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="text-[10px] font-mono text-cyber-cyan mb-2">${n.date}</div>
+                        <h3 class="font-orbitron font-bold text-sm text-white mb-2">${n.title}</h3>
+                        <p class="text-slate-300 text-xs leading-relaxed mb-4">${n.summary}</p>
+                    </div>
+                    <button onclick="openArticleModal('${n.title}', '${n.date}', '${n.text.replace(/'/g, "\\'")}')" class="text-cyber-cyan text-xs font-mono flex items-center gap-1 hover:underline">
+                        <span>Читати статтю</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        /* =======================================================
+           6. CATALOG PAGE LOGIC & FILTERS
+           ======================================================= */
+        function renderCatalog() {
+            const grid = document.getElementById('catalog-grid');
+            if (!grid) return;
+
+            const query = (document.getElementById('catalog-search')?.value || '').toLowerCase();
+            const driveFilter = document.getElementById('catalog-drive-filter')?.value || 'all';
+            const aiFilter = document.getElementById('catalog-ai-filter')?.value || 'all';
+
+            const filtered = ROBOTS_DATA.filter(r => {
+                const matchDomain = currentCatalogDomain === 'all' || r.domain === currentCatalogDomain;
+                const matchSearch = r.name.toLowerCase().includes(query) || r.company.toLowerCase().includes(query);
+                const matchDrive = driveFilter === 'all' || r.drive === driveFilter;
+                const matchAI = aiFilter === 'all' || r.aiType === aiFilter;
+
+                return matchDomain && matchSearch && matchDrive && matchAI;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 font-mono text-xs">За обраними критеріями моделей не знайдено.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(r => {
+                const isCompared = selectedCompareIds.includes(r.id);
+                return `
+                <div class="glass-card p-5 rounded-2xl flex flex-col justify-between border ${isCompared ? 'border-cyber-cyan shadow-neonCyan' : 'border-cyber-cyan/20'}">
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="px-2 py-0.5 rounded bg-cyber-card border border-cyber-cyan/30 text-[10px] font-mono text-cyber-cyan">
+                                ${r.year}
+                            </span>
+                            <span class="text-xs text-emerald-400 font-mono font-bold">${r.price}</span>
+                        </div>
+
+                        <h3 class="font-orbitron font-bold text-lg text-white mb-1">${r.name}</h3>
+                        <div class="text-[11px] font-mono text-slate-400 mb-3">${r.company}</div>
+
+                        <p class="text-slate-300 text-xs leading-relaxed mb-4 line-clamp-3">${r.desc}</p>
+
+                        <div class="space-y-1 text-[10px] font-mono bg-cyber-bg/80 p-2.5 rounded-xl border border-cyber-cyan/10 mb-4 text-slate-300">
+                            <div><strong class="text-slate-400">Привід:</strong> ${r.drive}</div>
+                            <div><strong class="text-slate-400">ШІ Ядро:</strong> ${r.aiType}</div>
+                            <div><strong class="text-slate-400">Статус:</strong> ${r.status}</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-2 border-t border-cyber-cyan/10">
+                        <button onclick="openRobotModal('${r.id}')" class="flex-1 py-2 rounded-xl bg-cyber-card hover:bg-cyber-cyan/20 border border-cyber-cyan/30 text-white font-orbitron text-xs font-semibold transition-all">
+                            Детальніше
+                        </button>
+                        <button onclick="toggleCompare('${r.id}')" class="p-2 rounded-xl ${isCompared ? 'bg-cyber-cyan text-black' : 'bg-cyber-card text-cyber-cyan border border-cyber-cyan/30'} hover:border-cyber-cyan text-xs transition-all" title="Порівняти">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function setCatalogDomain(domain) {
+            currentCatalogDomain = domain;
+            document.querySelectorAll('.cat-domain-btn').forEach(btn => {
+                btn.className = 'cat-domain-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-cyber-card border border-cyber-cyan/20 text-slate-300 hover:text-cyber-cyan';
+            });
+            event.target.className = 'cat-domain-btn px-3 py-1.5 rounded-lg text-xs font-mono bg-cyber-cyan text-black font-bold';
+            renderCatalog();
+        }
+
+        function openRobotModal(id) {
+            const robot = ROBOTS_DATA.find(r => r.id === id);
+            if (!robot) return;
+
+            const modalBody = document.getElementById('robot-modal-body');
+            modalBody.innerHTML = `
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-3 rounded-xl bg-cyber-card border border-cyber-cyan/30 text-cyber-cyan text-2xl">
+                        <i class="fa-solid ${robot.icon}"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-orbitron font-bold text-white">${robot.name}</h3>
+                        <div class="text-xs font-mono text-cyber-cyan">${robot.company} // Реліз: ${robot.year}</div>
+                    </div>
+                </div>
+
+                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-6">${robot.desc}</p>
+
+                <!-- Detailed Specs Table -->
+                <div class="grid grid-cols-2 gap-3 text-xs font-mono mb-6">
+                    <div class="bg-cyber-bg p-3 rounded-xl border border-cyber-cyan/20">
+                        <span class="text-slate-400 block mb-1">Висота / Вага:</span>
+                        <span class="text-white font-bold">${robot.height} / ${robot.weight}</span>
+                    </div>
+                    <div class="bg-cyber-bg p-3 rounded-xl border border-cyber-cyan/20">
+                        <span class="text-slate-400 block mb-1">Макс. Швидкість:</span>
+                        <span class="text-white font-bold">${robot.speed}</span>
+                    </div>
+                    <div class="bg-cyber-bg p-3 rounded-xl border border-cyber-cyan/20">
+                        <span class="text-slate-400 block mb-1">Акумулятор / Час:</span>
+                        <span class="text-white font-bold">${robot.battery}</span>
+                    </div>
+                    <div class="bg-cyber-bg p-3 rounded-xl border border-cyber-cyan/20">
+                        <span class="text-slate-400 block mb-1">Оціночна Вартість:</span>
+                        <span class="text-emerald-400 font-bold">${robot.price}</span>
+                    </div>
+                </div>
+
+                <div class="mb-6 space-y-2">
+                    <h4 class="font-orbitron text-xs text-cyber-cyan">СФЕРИ ЗАСТОСУВАННЯ:</h4>
+                    <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+                        ${robot.useCases.map(u => `<li>${u}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <button onclick="closeRobotModal()" class="w-full py-2.5 bg-cyber-cyan text-black font-orbitron font-bold text-xs rounded-xl">
+                    ЗАКРИТИ
+                </button>
+            `;
+
+            document.getElementById('robot-modal').classList.remove('hidden');
+        }
+
+        function closeRobotModal() {
+            document.getElementById('robot-modal').classList.add('hidden');
+        }
+
+        /* Compare System */
+        function toggleCompare(id) {
+            if (selectedCompareIds.includes(id)) {
+                selectedCompareIds = selectedCompareIds.filter(i => i !== id);
+                showToast('Вилучено з порівняння', 'info');
+            } else {
+                if (selectedCompareIds.length >= 2) {
+                    showToast('Обрано максимум 2 роботи для порівняння!', 'warning');
+                    return;
+                }
+                selectedCompareIds.push(id);
+                showToast('Додано до порівняння', 'success');
+            }
+            updateCompareBadges();
+            renderCatalog();
+        }
+
+        function updateCompareBadges() {
+            const count = selectedCompareIds.length;
+            document.getElementById('compare-badge').innerText = count;
+            document.getElementById('compare-badge-mobile').innerText = count;
+        }
+
+        function openCompareModal() {
+            if (selectedCompareIds.length < 2) {
+                showToast('Оберіть 2 роботи в Каталозі для порівняння!', 'info');
+                return;
+            }
+
+            const r1 = ROBOTS_DATA.find(r => r.id === selectedCompareIds[0]);
+            const r2 = ROBOTS_DATA.find(r => r.id === selectedCompareIds[1]);
+
+            const body = document.getElementById('compare-modal-body');
+            body.innerHTML = `
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300 border-collapse">
+                        <thead>
+                            <tr class="border-b border-cyber-cyan/30 text-cyber-cyan font-orbitron">
+                                <th class="p-3">Характеристика</th>
+                                <th class="p-3 text-sm font-bold text-white">${r1.name}</th>
+                                <th class="p-3 text-sm font-bold text-white">${r2.name}</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-cyber-cyan/10 font-mono">
+                            <tr>
+                                <td class="p-3 text-slate-400">Розробник / Рік</td>
+                                <td class="p-3">${r1.company} (${r1.year})</td>
+                                <td class="p-3">${r2.company} (${r2.year})</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-slate-400">Тип Приводу</td>
+                                <td class="p-3 text-cyber-cyan">${r1.drive}</td>
+                                <td class="p-3 text-cyber-cyan">${r2.drive}</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-slate-400">ШІ Модель</td>
+                                <td class="p-3">${r1.aiType}</td>
+                                <td class="p-3">${r2.aiType}</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-slate-400">Габарити / Вага</td>
+                                <td class="p-3">${r1.height} / ${r1.weight}</td>
+                                <td class="p-3">${r2.height} / ${r2.weight}</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-slate-400">Швидкість</td>
+                                <td class="p-3">${r1.speed}</td>
+                                <td class="p-3">${r2.speed}</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-slate-400">Оціночна Вартість</td>
+                                <td class="p-3 text-emerald-400 font-bold">${r1.price}</td>
+                                <td class="p-3 text-emerald-400 font-bold">${r2.price}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            document.getElementById('compare-modal').classList.remove('hidden');
+        }
+
+        function closeCompareModal() {
+            document.getElementById('compare-modal').classList.add('hidden');
+        }
+
+        /* =======================================================
+           7. TECH CORE LOGIC & HOTSPOTS
+           ======================================================= */
+        const TECH_TABS_DATA = {
+            ai: {
+                title: '1. Embodied AI (Втілений Штучний Інтелект)',
+                desc: 'Поєднання комп\'ютерного зору, генеративних моделей VLA (Vision-Language-Action) та навчання з підкріпленням (RLHF). Робот сприймає світ не через сухі текстові промпти, а через мультиспектральний потік відео та тактильних датчиків.',
+                bullets: ['Vision-Language-Action моделі', 'Фізичні симуляції Isaac Gym', 'Автономне планування маршруту']
+            },
+            muscle: {
+                title: '2. Біоміметика та Штучні М\'язи',
+                desc: 'Перехід від важких металевих шестеренчатих моторів до електроактивних полімерів (EAP), вуглецевих суглобів та замкненого рідинного охолодження.',
+                bullets: ['Еластичність зв\'язок при ходьбі', 'Зменшення ваги тіла на 40%', 'Рекуперація енергії при гальмуванні']
+            },
+            skin: {
+                title: '3. Сенсорика та Штучна Шкіра',
+                desc: 'Покриття з графену та силікону з матрицею з десятків тисяч п\'єзоелектричних датчиків тиску та температури.',
+                bullets: ['Точність стискання від 0.1 грама', '3D LiDAR 360° сканування', 'Захист від води та пилу IP67']
+            },
+            power: {
+                title: '4. Енергетика та Автономність',
+                desc: 'Твердотільні кремній-літієві батареї підвищеної щільності та водневі елементи забезпечують безперервну роботу 8+ годин.',
+                bullets: ['Індукційна бездротова зарядка', 'Швидка гаряча заміна акумулятора', 'Низьке виділення тепла']
+            }
+        };
+
+        function switchTechTab(key) {
+            document.querySelectorAll('.tech-tab-btn').forEach(b => {
+                b.classList.remove('border-cyber-cyan/50', 'active');
+                b.classList.add('border-cyber-cyan/20');
+            });
+            document.getElementById(`tech-tab-${key}`)?.classList.add('border-cyber-cyan/50', 'active');
+
+            const item = TECH_TABS_DATA[key];
+            const display = document.getElementById('tech-tab-display');
+            if (display && item) {
+                display.innerHTML = `
+                    <h3 class="text-2xl font-orbitron font-bold text-white mb-2">${item.title}</h3>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-6">${item.desc}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        ${item.bullets.map(b => `
+                            <div class="p-3 rounded-xl bg-cyber-bg/90 border border-cyber-cyan/20 text-xs text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-check text-emerald-400"></i>
+                                <span>${b}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+
+        const HOTSPOTS_DATA = {
+            head: { title: 'Голова & Комп\'ютерний Зір', desc: '4x Стереокамери RGB-D, 360° Lidar, масив мікрофонів з шумозаглушенням.' },
+            core: { title: 'Центральний Обчислювач Neural', desc: 'Подвійний чип серії AI SoC потужністю 275 TFLOPS для обробки нейромереж.' },
+            hands: { title: 'Маніпулятори & Сенсорні Кисті', desc: '22 ступені свободи, графенова шкіра для відчуття сили тиску 0.1г.' },
+            power: { title: 'Батарейний Модуль', desc: 'Твердотільний елемент 2.3 кВт·год з індукційним приймачем зарядки.' },
+            legs: { title: 'Привід Ходи & Стопи', desc: 'Високомоментні безщіткові мотори з амортизацією ударних навантажень.' }
+        };
+
+        function showHotspot(key) {
+            const data = HOTSPOTS_DATA[key];
+            const box = document.getElementById('hotspot-detail-box');
+            if (box && data) {
+                box.innerHTML = `
+                    <div class="text-xs font-mono text-cyber-cyan">// АКТИВНИЙ ВУЗОЛ: ${key.toUpperCase()}</div>
+                    <h4 class="text-lg font-orbitron font-bold text-white">${data.title}</h4>
+                    <p class="text-slate-300 text-xs leading-relaxed">${data.desc}</p>
+                `;
+            }
+        }
+
+        /* =======================================================
+           8. ETHICS POLL & DILEMMA SIMULATOR
+           ======================================================= */
+        let ethicsVotes = { yes: 110, hybrid: 185, no: 42 };
+
+        function castEthicsVote(option) {
+            ethicsVotes[option]++;
+            const total = ethicsVotes.yes + ethicsVotes.hybrid + ethicsVotes.no;
+
+            const pYes = Math.round((ethicsVotes.yes / total) * 100);
+            const pHybrid = Math.round((ethicsVotes.hybrid / total) * 100);
+            const pNo = Math.round((ethicsVotes.no / total) * 100);
+
+            document.getElementById('ethics-poll-options').classList.add('hidden');
+            const res = document.getElementById('ethics-poll-results');
+            res.classList.remove('hidden');
+
+            res.innerHTML = `
+                <div class="space-y-2">
+                    <div>
+                        <div class="flex justify-between text-xs font-mono text-slate-300 mb-1">
+                            <span>Так, з ліцензією:</span>
+                            <span class="text-cyber-cyan font-bold">${pYes}%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-cyber-cyan h-full" style="width: ${pYes}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-mono text-slate-300 mb-1">
+                            <span>Тільки під відеоконтролем:</span>
+                            <span class="text-cyber-purple font-bold">${pHybrid}%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-cyber-purple h-full" style="width: ${pHybrid}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-mono text-slate-300 mb-1">
+                            <span>Категорично ні:</span>
+                            <span class="text-rose-400 font-bold">${pNo}%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-rose-500 h-full" style="width: ${pNo}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-[10px] text-slate-400 font-mono text-center pt-2">Дякуємо за участь! Голос зараховано.</div>
+            `;
+            showToast('Ваш голос збережено!', 'success');
+        }
+
+        function resolveDilemma(choice) {
+            const resBox = document.getElementById('dilemma-result');
+            resBox.classList.remove('hidden');
+
+            if (choice === 'human') {
+                resBox.innerHTML = `<strong class="text-cyber-cyan block mb-1">Антропоцентричне рішення:</strong> Врятовано людину. Алгоритм поставив абсолютну цінність біологічного життя вище за будь-які матеріальні чи наукові надбання.`;
+            } else {
+                resBox.innerHTML = `<strong class="text-cyber-purple block mb-1">Утилітарне рішення:</strong> Врятовано науковий сервер. Алгоритм розрахував, що ліки від раку збережуть мільйони життів у майбутньому. Має високі юридичні ризики.`;
+            }
+        }
+
+        /* =======================================================
+           9. KNOWLEDGE & COMMUNITY LOGIC
+           ======================================================= */
+        function switchKnowledgeTab(tab) {
+            document.getElementById('know-sec-wiki').classList.add('hidden');
+            document.getElementById('know-sec-articles').classList.add('hidden');
+            document.getElementById('know-sec-forum').classList.add('hidden');
+
+            document.getElementById('know-tab-wiki').className = 'py-3 text-slate-400 hover:text-white';
+            document.getElementById('know-tab-articles').className = 'py-3 text-slate-400 hover:text-white';
+            document.getElementById('know-tab-forum').className = 'py-3 text-slate-400 hover:text-white';
+
+            if (tab === 'wiki') {
+                document.getElementById('know-sec-wiki').classList.remove('hidden');
+                document.getElementById('know-tab-wiki').className = 'py-3 text-cyber-cyan border-b-2 border-cyber-cyan';
+            } else if (tab === 'articles') {
+                document.getElementById('know-sec-articles').classList.remove('hidden');
+                document.getElementById('know-tab-articles').className = 'py-3 text-cyber-cyan border-b-2 border-cyber-cyan';
+            } else if (tab === 'forum') {
+                document.getElementById('know-sec-forum').classList.remove('hidden');
+                document.getElementById('know-tab-forum').className = 'py-3 text-cyber-cyan border-b-2 border-cyber-cyan';
+            }
+        }
+
+        function renderWiki() {
+            const grid = document.getElementById('wiki-cards-grid');
+            if (!grid) return;
+            const query = (document.getElementById('wiki-search-input')?.value || '').toLowerCase();
+
+            const filtered = WIKI_DATA.filter(w => w.term.toLowerCase().includes(query) || w.def.toLowerCase().includes(query));
+
+            grid.innerHTML = filtered.map(w => `
+                <div class="glass-card p-4 rounded-xl">
+                    <h4 class="font-orbitron font-bold text-sm text-cyber-cyan mb-1">${w.term}</h4>
+                    <p class="text-slate-300 text-xs leading-relaxed">${w.def}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderArticles() {
+            const grid = document.getElementById('know-sec-articles');
+            if (!grid) return;
+
+            grid.innerHTML = BLOG_DATA.map(b => `
+                <div class="glass-card p-5 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="text-[10px] font-mono text-slate-400 mb-2">${b.date}</div>
+                        <h3 class="font-orbitron font-bold text-base text-white mb-2">${b.title}</h3>
+                        <p class="text-slate-300 text-xs leading-relaxed mb-4">${b.summary}</p>
+                    </div>
+                    <button onclick="openArticleModal('${b.title}', '${b.date}', '${b.content.replace(/'/g, "\\'")}')" class="px-4 py-2 bg-cyber-card border border-cyber-cyan/30 text-cyber-cyan font-orbitron text-xs rounded-xl hover:bg-cyber-cyan hover:text-black transition-all">
+                        Читати статтю
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderForum() {
+            const stream = document.getElementById('forum-stream');
+            if (!stream) return;
+
+            stream.innerHTML = FORUM_THREADS.map(t => `
+                <div class="glass-card p-4 rounded-xl space-y-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="font-orbitron font-bold text-cyber-cyan">${t.author}</span>
+                        <span class="text-[10px] font-mono text-slate-500">${t.time}</span>
+                    </div>
+                    <h4 class="font-bold text-white text-xs">${t.title}</h4>
+                    <p class="text-slate-300 text-xs leading-relaxed">${t.msg}</p>
+                    <div class="flex items-center gap-3 pt-1 text-[11px] font-mono text-slate-400">
+                        <button onclick="likeThread(${t.id})" class="hover:text-cyber-cyan flex items-center gap-1">
+                            <i class="fa-regular fa-thumbs-up"></i>
+                            <span>${t.likes}</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function postForumThread() {
+            const author = document.getElementById('forum-author')?.value.trim();
+            const title = document.getElementById('forum-title')?.value.trim();
+            const msg = document.getElementById('forum-msg')?.value.trim();
+
+            if (!author || !title || !msg) {
+                showToast('Будь ласка, заповніть усі поля форми!', 'warning');
+                return;
+            }
+
+            FORUM_THREADS.unshift({
+                id: Date.now(),
+                author: author,
+                title: title,
+                msg: msg,
+                likes: 0,
+                time: 'Щойно'
+            });
+
+            document.getElementById('forum-title').value = '';
+            document.getElementById('forum-msg').value = '';
+            renderForum();
+            showToast('Тему створено!', 'success');
+        }
+
+        function likeThread(id) {
+            const t = FORUM_THREADS.find(item => item.id === id);
+            if (t) {
+                t.likes++;
+                renderForum();
+            }
+        }
+
+        /* =======================================================
+           10. ARTICLE MODAL & FORMS & TOASTS
+           ======================================================= */
+        function openArticleModal(title, date, text) {
+            const body = document.getElementById('article-modal-body');
+            body.innerHTML = `
+                <div class="text-xs font-mono text-cyber-cyan mb-2">${date}</div>
+                <h3 class="text-2xl font-orbitron font-bold text-white mb-4">${title}</h3>
+                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-6">${text}</p>
+                <button onclick="closeArticleModal()" class="w-full py-2.5 bg-cyber-cyan text-black font-orbitron font-bold text-xs rounded-xl">
+                    ЗАКРИТИ
+                </button>
+            `;
+            document.getElementById('article-modal').classList.remove('hidden');
+        }
+
+        function closeArticleModal() {
+            document.getElementById('article-modal').classList.add('hidden');
+        }
+
+        function submitContactForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('contact-name').value;
+            showToast(`Дякуємо, ${name}! Повідомлення надіслано.`, 'success');
+            document.getElementById('contact-form').reset();
+        }
+
+        function submitNewsletter(e) {
+            e.preventDefault();
+            showToast('Ви успішно підписалися на щотижневу розсилку!', 'success');
+            document.getElementById('newsletter-email').value = '';
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            const colorClass = type === 'success' ? 'border-emerald-500 text-emerald-400' :
+                               type === 'warning' ? 'border-amber-500 text-amber-400' : 'border-cyber-cyan text-cyber-cyan';
+
+            toast.className = `glass-panel px-4 py-3 rounded-xl border ${colorClass} text-xs font-mono shadow-neonCyan flex items-center gap-2 animate-fade-in pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> <span>${msg}</span>`;
+
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
