@@ -796,7 +796,8 @@
                 desc: 'Третє покоління антропоморфного робота Tesla. Оснащений тактильною шкірою на пальцях з чутливістю 10 грам та інтегрованим автопілотом FSD Full-Self Driving.',
                 useCases: ['Побутове прибирання', 'Автомобільне збирання', 'Логістичне сортування'],
                 icon: 'fa-robot',
-                image: 'robots/images/tesla-optimus.jpg'
+                image: 'robots/images/tesla-optimus.jpg',
+                headImage: 'robots/images/tesla-optimus_head.jpg'
             },
             {
                 id: 'figure-02',
@@ -1323,10 +1324,10 @@
             const modalBody = document.getElementById('robot-modal-body');
             modalBody.innerHTML = `
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="p-3 rounded-xl bg-cyber-card border border-cyber-cyan/30 text-cyber-cyan text-2xl">
-                        <i class="fa-solid ${robot.icon}"></i>
+                    <div class="w-20 h-20 shrink-0 rounded-xl bg-cyber-card border border-cyber-cyan/30 overflow-hidden flex items-center justify-center">
+                        ${robot.headImage ? `<img src="${robot.headImage}" alt="${robot.name} — голова та плечі" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"><i class="fa-solid ${robot.icon} text-cyber-cyan text-2xl" style="display:none"></i>` : `<i class="fa-solid ${robot.icon} text-cyber-cyan text-2xl"></i>`}
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <h3 class="text-2xl font-orbitron font-bold text-white">${robot.name}</h3>
                         <div class="text-xs font-mono text-cyber-cyan">${robot.company} // Реліз: ${robot.year}</div>
                     </div>
